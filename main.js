@@ -70,7 +70,15 @@ function main() {
   // objects we'll be drawing.
   const buffers = initBuffers(gl);
 
-  const texture = loadTexture(gl, 'dice1.png');
+  var textures = [];
+  textures.push(loadTexture(gl, 'dice1.png'));
+  textures.push(loadTexture(gl, 'dice2.png'));
+  textures.push(loadTexture(gl, 'dice3.png'));
+  textures.push(loadTexture(gl, 'dice4.png'));
+  textures.push(loadTexture(gl, 'dice5.jpg'));
+  textures.push(loadTexture(gl, 'dice6.jpg'));
+
+  // const texture = loadTexture(gl, 'dice1.png');
 
   var then = 0;
 
@@ -80,7 +88,7 @@ function main() {
     const deltaTime = now - then;
     then = now;
 
-    drawScene(gl, programInfo, buffers, texture, deltaTime);
+    drawScene(gl, programInfo, buffers, textures, deltaTime);
 
     requestAnimationFrame(render);
   }
@@ -279,7 +287,7 @@ function isPowerOf2(value) {
 //
 // Draw the scene.
 //
-function drawScene(gl, programInfo, buffers, texture, deltaTime) {
+function drawScene(gl, programInfo, buffers, textures, deltaTime) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
   gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -387,23 +395,61 @@ function drawScene(gl, programInfo, buffers, texture, deltaTime) {
       false,
       modelViewMatrix);
 
-  // Specify the texture to map onto the faces.
+  // Specify the textures to map onto the faces.
 
   // Tell WebGL we want to affect texture unit 0
   gl.activeTexture(gl.TEXTURE0);
-
   // Bind the texture to texture unit 0
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-
+  gl.bindTexture(gl.TEXTURE_2D, textures[0]);
   // Tell the shader we bound the texture to texture unit 0
   gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
 
-  {
-    const vertexCount = 36;
-    const type = gl.UNSIGNED_SHORT;
-    const offset = 0;
-    gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
-  }
+  // Tell WebGL we want to affect texture unit 1
+  gl.activeTexture(gl.TEXTURE1);
+  // Bind the texture to texture unit 1
+  gl.bindTexture(gl.TEXTURE_2D, textures[1]);
+  // Tell the shader we bound the texture to texture unit 1
+  gl.uniform1i(programInfo.uniformLocations.uSampler, 1);
+  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 12);
+
+  // Tell WebGL we want to affect texture unit 2
+  gl.activeTexture(gl.TEXTURE2);
+  // Bind the texture to texture unit 2
+  gl.bindTexture(gl.TEXTURE_2D, textures[2]);
+  // Tell the shader we bound the texture to texture unit 2
+  gl.uniform1i(programInfo.uniformLocations.uSampler, 2);
+  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 24);
+
+  // Tell WebGL we want to affect texture unit 3
+  gl.activeTexture(gl.TEXTURE3);
+  // Bind the texture to texture unit 3
+  gl.bindTexture(gl.TEXTURE_2D, textures[3]);
+  // Tell the shader we bound the texture to texture unit 3
+  gl.uniform1i(programInfo.uniformLocations.uSampler, 3);
+  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 36);
+
+  // Tell WebGL we want to affect texture unit 4
+  gl.activeTexture(gl.TEXTURE4);
+  // Bind the texture to texture unit 4
+  gl.bindTexture(gl.TEXTURE_2D, textures[4]);
+  // Tell the shader we bound the texture to texture unit 4
+  gl.uniform1i(programInfo.uniformLocations.uSampler, 4);
+  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 48);
+
+  // Tell WebGL we want to affect texture unit 5
+  gl.activeTexture(gl.TEXTURE5);
+  // Bind the texture to texture unit 5
+  gl.bindTexture(gl.TEXTURE_2D, textures[5]);
+  // Tell the shader we bound the texture to texture unit 5
+  gl.uniform1i(programInfo.uniformLocations.uSampler, 5);
+  gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 60);
+  // {
+  //   const vertexCount = 36;
+  //   const type = gl.UNSIGNED_SHORT;
+  //   const offset = 0;
+  //   gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
+  // }
 
   // Update the rotation for the next draw
 
