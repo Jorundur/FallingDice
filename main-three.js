@@ -103,11 +103,11 @@ function init()
    //   Note: a standard flat rectangular image will look distorted,
    //   a "spherical projection" image will look "normal".
    
-   // radius, segmentsWidth, segmentsHeight
-   var sphereGeom =  new THREE.SphereGeometry( 40, 32, 16 ); 
-   
    var light2 = new THREE.AmbientLight(0x444444);
    scene.add(light2);
+
+   // radius, segmentsWidth, segmentsHeight
+   var sphereGeom =  new THREE.SphereGeometry( 40, 32, 16 ); 
    
    // shaded earth -- side away from light picks up AmbientLight's color.
    var earthTexture = THREE.ImageUtils.loadTexture( 'images/earth-day.jpg' );
