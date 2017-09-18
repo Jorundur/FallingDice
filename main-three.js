@@ -150,12 +150,12 @@ function init()
    
    // create an array with six textures for a cool cube
    var materialArray = [];
-   materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice1.png' ) }));
-   materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice6.png' ) }));
-   materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice2.png' ) }));
-   materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice5.png' ) }));
-   materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice3.png' ) }));
-   materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice4.png' ) }));
+   materialArray.push(new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice1.png' ) }));
+   materialArray.push(new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice6.png' ) }));
+   materialArray.push(new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice2.png' ) }));
+   materialArray.push(new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice5.png' ) }));
+   materialArray.push(new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice3.png' ) }));
+   materialArray.push(new THREE.MeshLambertMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice4.png' ) }));
    // materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.TextureLoader( 'images/dice1.png' ) }));
    // materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.TextureLoader( 'images/dice6.png' ) }));
    // materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.TextureLoader( 'images/dice2.png' ) }));

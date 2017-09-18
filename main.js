@@ -47,7 +47,7 @@ initScene = function() {
         1,
         1000
     );
-    camera.position.set( 60, 50, 60 );
+    camera.position.set( 150, 150, 600 );
     camera.lookAt( scene.position );
     scene.add( camera );
 
@@ -96,50 +96,36 @@ initScene = function() {
 };
 
 spawnBox = (function() {
-    var box_geometry = new THREE.BoxGeometry( 4, 4, 4 ),
+    var box_geometry = new THREE.BoxGeometry( 4, 4, 4, 1, 1, 1 ),
         handleCollision = function( collided_with, linearVelocity, angularVelocity ) {
-            switch ( ++this.collisions ) {
-            
-                case 1:
-                    this.material.color.setHex(0xcc8855);
-                    break;
-            
-                case 2:
-                    this.material.color.setHex(0xbb9955);
-                    break;
-            
-                case 3:
-                    this.material.color.setHex(0xaaaa55);
-                    break;
-            
-                case 4:
-                    this.material.color.setHex(0x99bb55);
-                    break;
-            
-                case 5:
-                    this.material.color.setHex(0x88cc55);
-                    break;
-                
-                case 6:
-                    this.material.color.setHex(0x77dd55);
-                    break;
-            }
         },
         createBox = function() {
+
+            // create an array with six textures for a cool cube
+            var materialArray = [];
+            materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice1.png' ) }));
+            materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice6.png' ) }));
+            materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice2.png' ) }));
+            materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice5.png' ) }));
+            materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice3.png' ) }));
+            materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice4.png' ) }));
+
+            var DiceBlueMaterial = new THREE.MeshFaceMaterial(materialArray);
+            var DiceBlueGeom = new THREE.CubeGeometry( 85, 85, 85, 1, 1, 1 );
+
             var box, material;
          
             material = Physijs.createMaterial(
-                new THREE.MeshLambertMaterial({ map: loader.load( 'images/dice1.png' ) }),
+                DiceBlueMaterial,
                 .6, // medium friction
                 .3 // low restitution
             );
-            material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
-            material.map.repeat.set( .5, .5 );
 
             box = new Physijs.BoxMesh(
                 box_geometry,
                 material
             );
+
             box.collisions = 0;
 
             box.position.set(
