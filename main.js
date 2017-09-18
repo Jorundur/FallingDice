@@ -3,20 +3,26 @@
    Author: Lee Stemkoski
    Date: July 2013 (three.js v59dev)
 */
+
 // MAIN
+
 // standard global variables
 var container, scene, camera, renderer, controls, stats;
 var keyboard = new THREEx.KeyboardState();
 var clock = new THREE.Clock();
+
 // custom global variables
-var cube;
+var MovingFloor;
+
 init();
 animate();
+
 // FUNCTIONS      
 function init() 
 {
    // SCENE
    scene = new THREE.Scene();
+   
    // CAMERA
    var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
@@ -24,6 +30,7 @@ function init()
    scene.add(camera);
    camera.position.set(0,150,400);
    camera.lookAt(scene.position);   
+   
    // RENDERER
    if ( Detector.webgl )
       renderer = new THREE.WebGLRenderer( {antialias:true} );
@@ -32,36 +39,42 @@ function init()
    renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
    container = document.getElementById( 'ThreeJS' );
    container.appendChild( renderer.domElement );
+   
    // EVENTS
    THREEx.WindowResize(renderer, camera);
    THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
+   
    // CONTROLS
    controls = new THREE.OrbitControls( camera, renderer.domElement );
+   
    // STATS
    stats = new Stats();
    stats.domElement.style.position = 'absolute';
    stats.domElement.style.bottom = '0px';
    stats.domElement.style.zIndex = 100;
    container.appendChild( stats.domElement );
+   
    // LIGHT
    var light = new THREE.PointLight(0xffffff);
    light.position.set(0,150,100);
    scene.add(light);
+   
    // FLOOR
    var floorTexture = new THREE.ImageUtils.loadTexture( 'images/checkerboard.jpg' );
    floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping; 
    floorTexture.repeat.set( 2, 2 );
    var floorMaterial = new THREE.MeshBasicMaterial( { map: floorTexture, side: THREE.DoubleSide } );
    var floorGeometry = new THREE.PlaneGeometry(200, 200, 2, 2);
-   var floor = new THREE.Mesh(floorGeometry, floorMaterial);
-   floor.position.y = -0.5;
-   floor.rotation.x = Math.PI / 2;
-   scene.add(floor);
+   MovingFloor = new THREE.Mesh(floorGeometry, floorMaterial);
+   MovingFloor.position.y = -0.5;
+   MovingFloor.rotation.x = Math.PI / 2;
+   scene.add(MovingFloor);
+   
    // SKYBOX/FOG
    var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
    var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
    var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-   // scene.add(skyBox);
+   scene.add(skyBox);
    scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
    
    ////////////
@@ -105,30 +118,40 @@ function init()
    materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice3.png' ) }));
    materialArray.push(new THREE.MeshBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'images/dice4.png' ) }));
    var DiceBlueMaterial = new THREE.MeshFaceMaterial(materialArray);
-   
    var DiceBlueGeom = new THREE.CubeGeometry( 85, 85, 85, 1, 1, 1 );
    var DiceBlue = new THREE.Mesh( DiceBlueGeom, DiceBlueMaterial );
    DiceBlue.position.set(60, 50, -100);
-   scene.add( DiceBlue );  
-   
+   scene.add( DiceBlue );   
 }
-function animate() 
-{
-    requestAnimationFrame( animate );
+
+function animate() {
+   requestAnimationFrame( animate );
    render();      
    update();
 }
-function update()
-{
-   if ( keyboard.pressed("z") ) 
-   { 
-      // do something
-   }
+
+function update() {
+   var delta = clock.getDelta(); // seconds.
+   var moveDistance = 200 * delta; // 200 pixels per second
+   var rotateAngle = Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
+   
+   // local coordinates
+   // local transformations
+      
+   // global coordinates
+   if ( keyboard.pressed("left") )
+      MovingFloor.position.x -= moveDistance;
+   if ( keyboard.pressed("right") )
+      MovingFloor.position.x += moveDistance;
+   if ( keyboard.pressed("up") )
+      MovingFloor.position.z -= moveDistance;
+   if ( keyboard.pressed("down") )
+      MovingFloor.position.z += moveDistance;
    
    controls.update();
    stats.update();
 }
-function render() 
-{
+
+function render() {
    renderer.render( scene, camera );
 }
