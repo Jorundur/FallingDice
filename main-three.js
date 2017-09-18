@@ -77,23 +77,6 @@ function init()
    MovingFloor.rotation.x = Math.PI / 2;
    scene.add(MovingFloor);
 
-   // Ground
-    // var ground_material = Physijs.createMaterial(
-    //     new THREE.MeshLambertMaterial({ map: loader.load( 'images/checkerboard.jpg' ) }),
-    //     .8, // high friction
-    //     .3 // low restitution
-    // );
-    // ground_material.map.wrapS = ground_material.map.wrapT = THREE.RepeatWrapping;
-    // ground_material.map.repeat.set( 3, 3 );
-   
-    // MovingFloor = new Physijs.BoxMesh(
-    //     new THREE.BoxGeometry(100, 1, 100),
-    //     ground_material,
-    //     0 // mass
-    // );
-    // MovingFloor.receiveShadow = true;
-    // scene.add( MovingFloor );
-
    // AXES
    Axes = new THREE.AxisHelper(150);
    scene.add( Axes )
@@ -107,7 +90,6 @@ function init()
    for (var i = 0; i < 6; i++)
       materialArray.push( new THREE.MeshBasicMaterial({
          map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix ),
-         // map: THREE.TextureLoader( imagePrefix + directions[i] + imageSuffix ),
          side: THREE.BackSide
       }));
    var skyMaterial = new THREE.MeshFaceMaterial( materialArray );

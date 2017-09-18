@@ -18,8 +18,10 @@ initScene = function() {
 
     // CONTROLS
     controls = new THREE.OrbitControls( camera, renderer.domElement );
-   
 
+    // Loader
+    loader = new THREE.TextureLoader();
+   
     render_stats = new Stats();
     render_stats.domElement.style.position = 'absolute';
     render_stats.domElement.style.top = '0px';
@@ -45,7 +47,7 @@ initScene = function() {
         35,
         window.innerWidth / window.innerHeight,
         1,
-        1000
+        6000
     );
     camera.position.set( 150, 150, 600 );
     camera.lookAt( scene.position );
@@ -53,6 +55,22 @@ initScene = function() {
 
     // CONTROLS
    controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+   // SKYBOX
+   var imagePrefix = "images/dawnmountain-";
+   var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+   var imageSuffix = ".png";
+   var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );  
+   var materialArray = [];
+   for (var i = 0; i < 6; i++)
+      materialArray.push( new THREE.MeshBasicMaterial({
+         map: loader.load( imagePrefix + directions[i] + imageSuffix ),
+         // map: THREE.TextureLoader( imagePrefix + directions[i] + imageSuffix ),
+         side: THREE.BackSide
+      }));
+   var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+   var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+   scene.add( skyBox );
 
     // Light
     light = new THREE.DirectionalLight( 0xFFFFFF );
@@ -69,9 +87,10 @@ initScene = function() {
     light.shadowMapWidth = light.shadowMapHeight = 2048;
     light.shadowDarkness = .7;
     scene.add( light );
-    // Loader
-    loader = new THREE.TextureLoader();
-   
+
+    var light2 = new THREE.AmbientLight(0x444444);
+   scene.add(light2);
+
     // Ground
     ground_material = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'images/checkerboard.jpg' ) }),
