@@ -13,6 +13,7 @@ var clock = new THREE.Clock();
 
 // custom global variables
 var MovingFloor;
+var Axis;
 
 init();
 animate();
@@ -28,7 +29,7 @@ function init()
    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.1, FAR = 20000;
    camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
    scene.add(camera);
-   camera.position.set(0,150,400);
+   camera.position.set(0,400,1200);
    camera.lookAt(scene.position);   
    
    // RENDERER
@@ -69,13 +70,25 @@ function init()
    MovingFloor.position.y = -0.5;
    MovingFloor.rotation.x = Math.PI / 2;
    scene.add(MovingFloor);
+
+   // AXES
+   Axes = new THREE.AxisHelper(150);
+   scene.add( Axes )
    
-   // SKYBOX/FOG
-   var skyBoxGeometry = new THREE.CubeGeometry( 10000, 10000, 10000 );
-   var skyBoxMaterial = new THREE.MeshBasicMaterial( { color: 0x9999ff, side: THREE.BackSide } );
-   var skyBox = new THREE.Mesh( skyBoxGeometry, skyBoxMaterial );
-   scene.add(skyBox);
-   scene.fog = new THREE.FogExp2( 0x9999ff, 0.00025 );
+   // SKYBOX
+   var imagePrefix = "images/dawnmountain-";
+   var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+   var imageSuffix = ".png";
+   var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );  
+   var materialArray = [];
+   for (var i = 0; i < 6; i++)
+      materialArray.push( new THREE.MeshBasicMaterial({
+         map: THREE.ImageUtils.loadTexture( imagePrefix + directions[i] + imageSuffix ),
+         side: THREE.BackSide
+      }));
+   var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+   var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+   scene.add( skyBox );
    
    ////////////
    // CUSTOM //
@@ -137,16 +150,33 @@ function update() {
    
    // local coordinates
    // local transformations
+
+   if (keyboard.pressed("W")) {
+      MovingFloor.position.y += moveDistance;
+      Axes.position.y += moveDistance;
+   }
+   if (keyboard.pressed("S")) {
+      MovingFloor.position.y -= moveDistance;
+      Axes.position.y -= moveDistance;
+   }
       
    // global coordinates
-   if ( keyboard.pressed("left") )
+   if (keyboard.pressed("left")) {
       MovingFloor.position.x -= moveDistance;
-   if ( keyboard.pressed("right") )
+      Axes.position.x -= moveDistance;
+   }
+   if (keyboard.pressed("right")) {
       MovingFloor.position.x += moveDistance;
-   if ( keyboard.pressed("up") )
+      Axes.position.x += moveDistance;
+   }
+   if (keyboard.pressed("up")) {
       MovingFloor.position.z -= moveDistance;
-   if ( keyboard.pressed("down") )
+      Axes.position.z -= moveDistance;
+   }
+   if (keyboard.pressed("down")) {
       MovingFloor.position.z += moveDistance;
+      Axes.position.z += moveDistance;
+   }
    
    controls.update();
    stats.update();
