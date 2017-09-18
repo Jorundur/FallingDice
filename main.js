@@ -4,7 +4,10 @@ Physijs.scripts.worker = 'physijs_worker.js';
 Physijs.scripts.ammo = 'js/ammo.js';
 
 var initScene, render, _boxes = [], spawnBox, loader, update,
-    renderer, render_stats, physics_stats, scene, ground_material, ground, light, camera, controls;
+    renderer, render_stats, physics_stats, scene, ground_material, moving_ground, light, camera, controls;
+
+var keyboard = new THREEx.KeyboardState();
+var clock = new THREE.Clock();
 
 initScene = function() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -78,13 +81,13 @@ initScene = function() {
     ground_material.map.wrapS = ground_material.map.wrapT = THREE.RepeatWrapping;
     ground_material.map.repeat.set( 3, 3 );
    
-    ground = new Physijs.BoxMesh(
+    moving_ground = new Physijs.BoxMesh(
         new THREE.BoxGeometry(100, 1, 100),
         ground_material,
         0 // mass
     );
-    ground.receiveShadow = true;
-    scene.add( ground );
+    moving_ground.receiveShadow = true;
+    scene.add( moving_ground );
 
     spawnBox();
 
@@ -162,11 +165,55 @@ spawnBox = (function() {
     };
 })();
 
+update = function() {
+    var delta = clock.getDelta(); // seconds.
+    var moveDistance = 200 * delta; // 200 pixels per second
+    var rotateAngle = Math.PI / 2 * delta;   // pi/2 radians (90 degrees) per second
+
+    if (keyboard.pressed("W")) {
+        moving_ground.position.y += moveDistance;
+        moving_ground.__dirtyPosition = true;
+        // Axes.position.y += moveDistance;
+    }
+    if (keyboard.pressed("S")) {
+        moving_ground.position.y -= moveDistance;
+        moving_ground.__dirtyPosition = true;
+
+        // Axes.position.y -= moveDistance;
+    }
+      
+    // global coordinates
+    if (keyboard.pressed("left")) {
+        moving_ground.position.x -= moveDistance;
+        moving_ground.__dirtyPosition = true;
+
+        // Axes.position.x -= moveDistance;
+    }
+    if (keyboard.pressed("right")) {
+        moving_ground.position.x += moveDistance;
+        moving_ground.__dirtyPosition = true;
+
+        // Axes.position.x += moveDistance;
+    }
+    if (keyboard.pressed("up")) {
+        moving_ground.position.z -= moveDistance;
+        moving_ground.__dirtyPosition = true;
+        // Axes.position.z -= moveDistance;
+    }
+    if (keyboard.pressed("down")) {
+        moving_ground.position.z += moveDistance;
+        moving_ground.__dirtyPosition = true;
+        // Axes.position.z += moveDistance;
+    }
+
+    controls.update();
+    render_stats.update();
+};
+
 render = function() {
     requestAnimationFrame( render );
     renderer.render( scene, camera );
-    render_stats.update();
-    controls.update();
+    update();
 };
 
 window.onload = initScene;
