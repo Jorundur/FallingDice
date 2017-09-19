@@ -1,6 +1,7 @@
 # Falling Dice
 ## A WebGL demo using Three.js and Physijs
 ### Jörundur Jörundsson
+**NOTE**: I began with writing C code and using Emscripten to generate the JS code but ran into some issues so I decided to go ahead and write JS.
 
 These examples provided good help:
  - https://stemkoski.github.io/Three.js/
