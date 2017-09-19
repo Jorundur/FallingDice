@@ -19,9 +19,10 @@ initScene = function() {
     // CONTROLS
     controls = new THREE.OrbitControls( camera, renderer.domElement );
 
-    // Loader
+    // LOADER
     loader = new THREE.TextureLoader();
    
+    // Stats that appear in upper left corner
     render_stats = new Stats();
     render_stats.domElement.style.position = 'absolute';
     render_stats.domElement.style.top = '0px';
@@ -43,34 +44,34 @@ initScene = function() {
         }
     );
    
+    // CAMERA
     camera = new THREE.PerspectiveCamera(
         35,
         window.innerWidth / window.innerHeight,
         1,
-        15000
+        15000 // Set far end high enough to cover skybox
     );
     camera.position.set( 150, 150, 400 );
     camera.lookAt( scene.position );
     scene.add( camera );
 
     // CONTROLS
-   controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
 
-   // SKYBOX
-   var imagePrefix = "images/dawnmountain-";
-   var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
-   var imageSuffix = ".png";
-   var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );  
-   var materialArray = [];
-   for (var i = 0; i < 6; i++)
-      materialArray.push( new THREE.MeshBasicMaterial({
-         map: loader.load( imagePrefix + directions[i] + imageSuffix ),
-         // map: THREE.TextureLoader( imagePrefix + directions[i] + imageSuffix ),
-         side: THREE.BackSide
-      }));
-   var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
-   var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
-   scene.add( skyBox );
+    // SKYBOX
+    var imagePrefix = "images/dawnmountain-";
+    var directions  = ["xpos", "xneg", "ypos", "yneg", "zpos", "zneg"];
+    var imageSuffix = ".png";
+    var skyGeometry = new THREE.CubeGeometry( 5000, 5000, 5000 );  
+    var materialArray = [];
+    for (var i = 0; i < 6; i++)
+        materialArray.push( new THREE.MeshBasicMaterial({
+            map: loader.load( imagePrefix + directions[i] + imageSuffix ),
+            side: THREE.BackSide
+        }));
+    var skyMaterial = new THREE.MeshFaceMaterial( materialArray );
+    var skyBox = new THREE.Mesh( skyGeometry, skyMaterial );
+    scene.add( skyBox );
 
     // Light
     light = new THREE.DirectionalLight( 0xFFFFFF );
@@ -92,29 +93,28 @@ initScene = function() {
     sunlight.position.set(0,150,100);
     scene.add( sunlight );
 
-    var light2 = new THREE.AmbientLight(0x444444);
-   scene.add(light2);
+    var ambience = new THREE.AmbientLight(0x444444);
+    scene.add( ambience );
 
-   // radius, segmentsWidth, segmentsHeight
-   var sphereGeom =  new THREE.SphereGeometry( 40, 32, 16 ); 
-   
-   // shaded earth -- side away from light picks up AmbientLight's color.
-   var earthTexture = loader.load( 'images/earth-day.jpg' );
-   var earthMaterial = new THREE.MeshLambertMaterial( { map: earthTexture } );
-   var earth = new THREE.Mesh( sphereGeom.clone(), earthMaterial );
-   earth.position.set(-200, 50, 0);
-   scene.add( earth );
+    // EARTH
+    // Params: radius, segmentsWidth, segmentsHeight
+    var sphereGeom = new THREE.SphereGeometry( 40, 32, 16 ); 
+    // shaded earth -- side away from light picks up AmbientLight's color.
+    var earthTexture = loader.load( 'images/earth-day.jpg' );
+    var earthMaterial = new THREE.MeshLambertMaterial( { map: earthTexture } );
+    var earth = new THREE.Mesh( sphereGeom.clone(), earthMaterial );
+    earth.position.set(-200, 50, 0);
+    scene.add( earth );
 
-   // create a small sphere to show position of light
-   // create a small sphere to show position of light
-   var lightbulb = new THREE.Mesh( 
-      new THREE.SphereGeometry( 10, 16, 8 ), 
-      new THREE.MeshBasicMaterial( { color: 0xffaa00 } )
-   );
-   lightbulb.position.set(sunlight.position.x, sunlight.position.y, sunlight.position.z);
-   scene.add( lightbulb );
+    // create a small sphere to show position of light
+    var lightbulb = new THREE.Mesh( 
+        new THREE.SphereGeometry( 10, 16, 8 ), 
+        new THREE.MeshBasicMaterial( { color: 0xffaa00 } )
+    );
+    lightbulb.position.set(sunlight.position.x, sunlight.position.y, sunlight.position.z);
+    scene.add( lightbulb );
 
-    // Ground
+    // GROUND
     ground_material = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'images/checkerboard.jpg' ) }),
         .8, // high friction
@@ -131,6 +131,7 @@ initScene = function() {
     moving_ground.receiveShadow = true;
     scene.add( moving_ground );
 
+    // Spawns dice in random places every second
     spawnBox();
 
     // AXES
@@ -147,7 +148,7 @@ spawnBox = (function() {
         },
         createBox = function() {
 
-            // create an array with six textures for a cool cube
+            // create an array with six textures for our dice
             var materialArray = [];
             materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice1.png' ) }));
             materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice6.png' ) }));
@@ -157,7 +158,6 @@ spawnBox = (function() {
             materialArray.push(new THREE.MeshLambertMaterial( { map: loader.load( 'images/dice4.png' ) }));
 
             var DiceBlueMaterial = new THREE.MeshFaceMaterial(materialArray);
-            var DiceBlueGeom = new THREE.CubeGeometry( 85, 85, 85, 1, 1, 1 );
 
             var box, material;
          
@@ -206,6 +206,7 @@ update = function() {
         moving_ground.position.y += moveDistance;
         moving_ground.__dirtyPosition = true;
         axes.position.y += moveDistance;
+        // __dirtyPosition used because of: https://github.com/chandlerprall/Physijs/wiki/Updating-an-object's-position-&-rotation
         axes.__dirtyPosition = true;
     }
     if (keyboard.pressed("S")) {
