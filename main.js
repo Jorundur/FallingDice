@@ -16,9 +16,6 @@ initScene = function() {
     renderer.shadowMapSoft = true;
     document.getElementById( 'viewport' ).appendChild( renderer.domElement );
 
-    // CONTROLS
-    controls = new THREE.OrbitControls( camera, renderer.domElement );
-
     // LOADER
     loader = new THREE.TextureLoader();
    
@@ -55,7 +52,7 @@ initScene = function() {
     camera.lookAt( scene.position );
     scene.add( camera );
 
-    // CONTROLS
+    // CONTROLS (moving around with mouse)
     controls = new THREE.OrbitControls( camera, renderer.domElement );
 
     // SKYBOX
