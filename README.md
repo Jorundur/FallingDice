@@ -8,7 +8,7 @@ These examples provided good help:
  - https://github.com/chandlerprall/Physijs
  
  ## Instructions:
-  - Download Repo and cd into directory (where `index.html` is located).
+  - Download repo and cd into directory (where `index.html` is located).
   - Run `python -m SimpleHTTPServer 8080`
   - Open `localhost:8080` in browser to see results!
 
