@@ -8,11 +8,11 @@ These examples provided good help:
  - https://github.com/chandlerprall/Physijs
  
  ## Instructions:
-  - Download repo and cd into directory (where `index.html` is located).
+  - Download repo and `cd` into directory (where `index.html` is located).
   - Run `python -m SimpleHTTPServer 8080`
   - Open `localhost:8080` in browser to see results!
 
-## Other related projects:
+## Related projects:
  - PirateQuest: A 2d pirate game with 10 increasingly difficult levels. Made in `Computer Game Design & Development` course in Reykjavik University (RU). Repo: https://github.com/MartenGames/PirateQuest
- - libgdx projects made in `Computer Graphics` course in RU. Repo: https://github.com/TGRAmodd
+ - `libgdx` projects made in `Computer Graphics` course in RU. Repo: https://github.com/TGRAmodd
  - 3d sound visualisation made in `Game Engine Architecture` course in RU. Repo: https://github.com/GEDEMODD/GEDELOK
